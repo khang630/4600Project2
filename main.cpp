@@ -2,7 +2,7 @@
 Course: CSCE 4600.002 Introduction to Operating Systems
 Group 14: Khang Nguyen, Christelle Ndaya, Hung Nguyen
 Date: 4/23/22
-Descritpion: This program simulates the graph reduction algorithm to determine 
+Descritpion: This program simulates the graph reduction algorithm to determine
 whether the graph represented by M is completely reducible and hence deadlock-free.
 
 For compilation, type "g++ main.cpp", then "./a.out". Then enter in your input.txt file.
@@ -209,27 +209,26 @@ int main()
         // vector<int> Work(sizeof(Worktemp) / sizeof(Worktemp[0])); // Available
 
         int counter = num_processes; // start off with total # of processes
+        int iterations=0; //keeps track of the # of iterations through the arrays. If more than max, then it is in DEADLOCK
         int comparecounter = 0;
         int processdone = 0;           // to indicate if a process has ran
         int temparray[num_resources];  // hold request row
         int temparray2[num_resources]; // hold allocation row
         string result;                 // store result in a string message
 
-        while (1) // infinite loop
-        {
-            // process factorial! to find worst case scenario if it works. If its more than this, its DEADLOCKED
-            int factorial = 1;
-            for (int i = 1; i <= num_processes; ++i)
-            {
-                factorial = factorial * i;
-            }
+        //this determines if the while loop has run over its maximum. If it does, it means that the graph is in DEADLOCK
+        int n = num_processes;
+        // apply n(n-1)/2 for sequence of numbers ...5+4+3+2+1
+        int max = ((n + 1) * n) / 2;
 
-            if (processdone > factorial)
+        while (1) // infinite loop
+        { 
+            if (iterations > max+1) //+1 to account for the extra iteration that triggers this if condition
             {
                 result = "DEADLOCKED!!";
                 break; // break out of the infinite loop
             }
-
+            
             counter = counter % num_processes; // keep looping numbers
             if (processdone == num_processes)
             {
@@ -263,21 +262,16 @@ int main()
 
                     for (int i = 0; i < num_resources; ++i)
                     {
-                        Worktemp[i] = Worktemp[i]+temparray2[i]; // get Request row info and put in temparray
+                        Worktemp[i] = Worktemp[i] + temparray2[i]; // get Request row info and put in temparray
                     }
-                    
+
                     Finishtemp[counter] = true; // indicate that the process has ran and is finished
                     processdone++;              // indicate that a process is done and increment
                 }
             }
 
-            if (processdone == 0) // if after first iteration through all processes and still no process has run, its DEADLOCKEDs
-            {
-                result = "DEADLOCKED!!";
-                break; // break out of the infinite loop
-            }
-
             counter++; // increment counter
+            iterations++; //increment iterations
         }
 
         // Finish Array
@@ -289,7 +283,7 @@ int main()
         }
 
         // Final Availble Array
-        cout<<endl;
+        cout << endl;
         cout << endl;
         cout << "Contents of End Available Array" << endl;
         for (int i = 0; i < num_resources; ++i)
